@@ -202,32 +202,70 @@ function initMusic() {
   if (!audio || !toggle) return;
 
   let isOn = false;
+  let armed = true;
 
-  async function setOn(next) {
-    isOn = next;
+  function label() {
     toggle.setAttribute("aria-pressed", String(isOn));
     toggle.querySelector(".musicToggle__text").textContent = isOn
       ? "Pause our song"
       : "Play our song";
+  }
+
+  async function playInternal() {
+    try {
+      audio.volume = 0.35;
+      const maybePromise = audio.play();
+      if (maybePromise && typeof maybePromise.then === "function") {
+        await maybePromise;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function setOn(next) {
+    isOn = next;
+    label();
 
     if (!isOn) {
       audio.pause();
       return;
     }
 
-    try {
-      audio.volume = 0.35;
-      await audio.play();
-    } catch {
-      // Autoplay can fail; keep UI in off state
+    const ok = await playInternal();
+    if (!ok) {
+      // If for some reason this exact gesture wasn't accepted,
+      // keep the label inviting another tap.
       isOn = false;
-      toggle.setAttribute("aria-pressed", "false");
-      toggle.querySelector(".musicToggle__text").textContent =
-        "Tap to play our song";
+      label();
     }
   }
 
   toggle.addEventListener("click", () => setOn(!isOn));
+
+  // As soon as she touches or clicks ANYWHERE once,
+  // try to gently start the music in the background.
+  function armOnce() {
+    if (!armed) return;
+    armed = false;
+    const handler = async () => {
+      document.removeEventListener("click", handler);
+      document.removeEventListener("touchstart", handler);
+      const ok = await playInternal();
+      if (ok) {
+        isOn = true;
+        label();
+      }
+    };
+    document.addEventListener("click", handler, { passive: true, once: true });
+    document.addEventListener("touchstart", handler, {
+      passive: true,
+      once: true,
+    });
+  }
+
+  armOnce();
 
   return {
     ensurePlaying: async () => {
