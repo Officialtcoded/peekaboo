@@ -202,7 +202,6 @@ function initMusic() {
   if (!audio || !toggle) return;
 
   let isOn = false;
-  let armed = true;
 
   function label() {
     toggle.setAttribute("aria-pressed", String(isOn));
@@ -243,29 +242,23 @@ function initMusic() {
   }
 
   toggle.addEventListener("click", () => setOn(!isOn));
-
-  // As soon as she touches or clicks ANYWHERE once,
-  // try to gently start the music in the background.
-  function armOnce() {
-    if (!armed) return;
-    armed = false;
-    const handler = async () => {
-      document.removeEventListener("click", handler);
-      document.removeEventListener("touchstart", handler);
+  // Dedicated intro overlay button that both starts the music
+  // and then gracefully fades away.
+  const introOverlay = $("#introOverlay");
+  const introPlay = $("#introPlay");
+  if (introOverlay && introPlay) {
+    introPlay.addEventListener("click", async () => {
       const ok = await playInternal();
       if (ok) {
         isOn = true;
         label();
       }
-    };
-    document.addEventListener("click", handler, { passive: true, once: true });
-    document.addEventListener("touchstart", handler, {
-      passive: true,
-      once: true,
+      introOverlay.classList.add("introOverlay--hide");
+      window.setTimeout(() => {
+        introOverlay.remove();
+      }, 450);
     });
   }
-
-  armOnce();
 
   return {
     ensurePlaying: async () => {
@@ -281,11 +274,12 @@ function initMusic() {
 function initRunawayNo() {
   const noBtn = $("#noBtn");
   const ctaRow = $("#ctaRow");
+  const panel = document.querySelector(".question__panel");
   if (!noBtn || !ctaRow) return;
 
   // We "teleport" the button within the viewport while keeping it reasonably near the question panel.
   // Using fixed positioning prevents layout jumps and works for both mouse and touch proximity.
-  let isArmed = true;
+  let isArmed = false;
   let movedRecently = false;
 
   const safePadding = 12;
@@ -353,6 +347,7 @@ function initRunawayNo() {
   }
 
   function maybeRun(e) {
+    if (!isArmed) return;
     const rect = getNoRect();
     const x = e.clientX;
     const y = e.clientY;
@@ -374,6 +369,20 @@ function initRunawayNo() {
     },
     { passive: true }
   );
+
+  // Only arm the runaway behavior once the pointer actually
+  // enters the question panel, so it doesn't disappear randomly.
+  const arm = () => {
+    isArmed = true;
+    if (panel) {
+      panel.removeEventListener("pointerenter", arm);
+      panel.removeEventListener("touchstart", arm);
+    }
+  };
+  if (panel) {
+    panel.addEventListener("pointerenter", arm, { passive: true });
+    panel.addEventListener("touchstart", arm, { passive: true });
+  }
 
   // Clicking "No" should also dodge
   noBtn.addEventListener("click", (ev) => {
