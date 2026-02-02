@@ -201,69 +201,65 @@ function initMusic() {
   const toggle = $("#musicToggle");
   if (!audio || !toggle) return;
 
-  let isOn = false;
+  audio.volume = 0.4;
 
-  function label() {
-    toggle.setAttribute("aria-pressed", String(isOn));
-    toggle.querySelector(".musicToggle__text").textContent = isOn
+  function updateLabel() {
+    const playing = !audio.paused;
+    toggle.setAttribute("aria-pressed", String(playing));
+    toggle.querySelector(".musicToggle__text").textContent = playing
       ? "Pause our song"
       : "Play our song";
   }
 
-  async function playInternal() {
-    try {
-      audio.volume = 0.35;
-      const maybePromise = audio.play();
-      if (maybePromise && typeof maybePromise.then === "function") {
-        await maybePromise;
+  toggle.addEventListener("click", () => {
+    if (audio.paused) {
+      const p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(updateLabel).catch(() => {
+          // ignore – some browsers may still block programmatic play
+        });
+      } else {
+        updateLabel();
       }
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async function setOn(next) {
-    isOn = next;
-    label();
-
-    if (!isOn) {
+    } else {
       audio.pause();
-      return;
+      updateLabel();
     }
+  });
 
-    const ok = await playInternal();
-    if (!ok) {
-      // If for some reason this exact gesture wasn't accepted,
-      // keep the label inviting another tap.
-      isOn = false;
-      label();
-    }
-  }
-
-  toggle.addEventListener("click", () => setOn(!isOn));
   // Dedicated intro overlay button that both starts the music
   // and then gracefully fades away.
   const introOverlay = $("#introOverlay");
   const introPlay = $("#introPlay");
   if (introOverlay && introPlay) {
-    introPlay.addEventListener("click", async () => {
-      const ok = await playInternal();
-      if (ok) {
-        isOn = true;
-        label();
+    const trigger = () => {
+      const p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(updateLabel).catch(() => {
+          // even if play fails, still close the overlay
+        });
+      } else {
+        updateLabel();
       }
       introOverlay.classList.add("introOverlay--hide");
       window.setTimeout(() => {
         introOverlay.remove();
       }, 450);
-    });
+    };
+
+    introPlay.addEventListener("click", trigger);
+    introPlay.addEventListener("touchstart", trigger);
   }
 
   return {
-    ensurePlaying: async () => {
-      if (isOn) return;
-      await setOn(true);
+    ensurePlaying: () => {
+      if (!audio.paused) return;
+      const p = audio.play();
+      if (p && typeof p.then === "function") {
+        p.then(updateLabel).catch(() => {});
+      } else {
+        updateLabel();
+      }
     },
   };
 }
