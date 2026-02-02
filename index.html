@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4b0f1b" />
+    <meta
+      name="description"
+      content="A romantic Valentine’s Day love letter brought to life."
+    />
+    <title>Omolara (LaPearl), Be My Valentine</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+
+  <body>
+    <canvas id="petals" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="monogram" aria-hidden="true">♥</div>
+        <button
+          class="musicToggle"
+          id="musicToggle"
+          type="button"
+          aria-pressed="false"
+        >
+          <span class="musicToggle__icon" aria-hidden="true">♪</span>
+          <span class="musicToggle__text">Play our song</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="hero reveal">
+        <p class="hero__kicker">My love, my home, my answered prayer</p>
+        <h1 class="hero__title">
+          Omolara Akinbile —
+          <span class="hero__titleScript">LaPearl</span>
+        </h1>
+        <p class="hero__subtitle">
+          This is a little love letter, turned into a place you can step into.
+        </p>
+
+        <div class="hero__card glass">
+          <p class="script">
+            From the day you became my wife, you didn’t just change my life —
+            you softened it, sweetened it, and filled it with peace.
+          </p>
+          <p class="body">
+            I love the way you care with your whole heart, the way your smile
+            makes ordinary moments feel sacred, and the way your presence turns
+            every room into home. Thank you for the laughter, the prayers, the
+            quiet talks, the shared dreams, and the countless little ways you’ve
+            loved me into becoming better.
+          </p>
+          <p class="body">
+            I’m still falling for you — in the small moments, in the big ones,
+            and in everything in between. Today, I just want to ask you again…
+          </p>
+        </div>
+      </section>
+
+      <section class="memories reveal" aria-labelledby="memoriesTitle">
+        <div class="sectionHead">
+          <h2 id="memoriesTitle" class="sectionHead__title">
+            Our cherished memories
+          </h2>
+          <p class="sectionHead__sub">
+            Swipe on mobile — each photo is a chapter I never want to stop
+            reading.
+          </p>
+        </div>
+
+        <div class="carousel glass" role="region" aria-label="Photo gallery">
+          <div class="carousel__track" id="carouselTrack">
+            <figure class="carousel__item">
+              <img
+                src="./assets/photos/photo-1.jpg"
+                alt="A cherished moment together (photo 1)"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='./assets/placeholders/placeholder-1.svg';"
+              />
+            </figure>
+            <figure class="carousel__item">
+              <img
+                src="./assets/photos/photo-2.jpg"
+                alt="A cherished moment together (photo 2)"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='./assets/placeholders/placeholder-2.svg';"
+              />
+            </figure>
+            <figure class="carousel__item">
+              <img
+                src="./assets/photos/photo-3.jpg"
+                alt="A cherished moment together (photo 3)"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='./assets/placeholders/placeholder-3.svg';"
+              />
+            </figure>
+            <figure class="carousel__item">
+              <img
+                src="./assets/photos/photo-4.jpg"
+                alt="A cherished moment together (photo 4)"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='./assets/placeholders/placeholder-4.svg';"
+              />
+            </figure>
+          </div>
+
+          <div class="carousel__controls" aria-hidden="false">
+            <button
+              class="iconBtn"
+              id="prevBtn"
+              type="button"
+              aria-label="Previous photo"
+            >
+              ‹
+            </button>
+            <button
+              class="iconBtn"
+              id="nextBtn"
+              type="button"
+              aria-label="Next photo"
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="videoMemory reveal" aria-label="Our little movie together">
+        <div class="sectionHead">
+          <h2 class="sectionHead__title">A moving memory</h2>
+          <p class="sectionHead__sub">
+            Press play to relive one of our moments together.
+          </p>
+        </div>
+
+        <div class="videoMemory__frame glass">
+          <video
+            class="videoMemory__video"
+            src="./assets/video/memory.mp4"
+            controls
+            playsinline
+            preload="metadata"
+          ></video>
+        </div>
+      </section>
+
+      <section class="question reveal" aria-labelledby="questionTitle">
+        <div class="question__panel glass">
+          <p class="question__pre">With all my heart…</p>
+          <h2 id="questionTitle" class="question__title">
+            Will you be my <span class="question__titleScript">Valentine</span>?
+          </h2>
+
+          <div class="ctaRow" id="ctaRow">
+            <button class="btn btn--yes" id="yesBtn" type="button">
+              Yes, Forever!
+            </button>
+            <button class="btn btn--no" id="noBtn" type="button">No</button>
+          </div>
+
+          <p class="hint">(P.S. the “No” button is shy. Very shy.)</p>
+        </div>
+      </section>
+
+      <section class="final reveal" id="final" hidden aria-live="polite">
+        <div class="final__card glass">
+          <h3 class="final__title">You just made my whole world glow.</h3>
+          <p class="final__script">
+            LaPearl, I choose you — today, tomorrow, and every day after.
+          </p>
+          <p class="final__body">
+            Happy Valentine’s Day, my love. Let’s keep making memories that feel
+            like prayers answered.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <div id="celebrate" class="celebrate" aria-hidden="true"></div>
+
+    <audio id="bgm" preload="auto" loop>
+      <source src="./assets/music/romantic.mp3" type="audio/mpeg" />
+    </audio>
+
+    <footer class="credit" aria-label="Music credit">
+      Music: “Love” by Alex-Productions (CC BY 3.0) —
+      <a
+        href="https://www.free-stock-music.com/alex-productions-romantic-music-for-weddings-and-valentines-day-love.html"
+        target="_blank"
+        rel="noreferrer"
+        >source</a
+      >
+    </footer>
+
+    <script src="./script.js" defer></script>
+  </body>
+</html>
